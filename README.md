@@ -211,6 +211,14 @@ claude-skills/
     └── collaborating-with-opencode-mcp/  # retired MCP-first OpenCode skill (2026-07)
 ```
 
+## License and Attribution
+
+MIT, © 2026 Mike Shearer. See [LICENSE](LICENSE).
+
+These skills are meant to be adapted. If you re-author one, keep a Lineage
+block naming the source repo and skill path. Include the commit you started
+from and a line on what you changed. [NOTICE](NOTICE) has the format.
+
 ## Archive
 
 `_archive/legacy-slash-commands/` contains v1 slash commands from before Claude Code had skills. Some have useful patterns worth mining; check before building from scratch.

@@ -16,8 +16,15 @@ metadata:
   version: "2.5.1"
 ---
 
-> Forked from [blader/humanizer](https://github.com/blader/humanizer) v2.5.1 (MIT, © 2025 Siqi Chen).
-> Local modifications: trigger description rewritten for model invocation; output format narrowed for cleanup-pass use.
+> Forked from [blader/humanizer](https://github.com/blader/humanizer) at commit
+> `f86de60` (v2.5.1, 2026-05-26; MIT, © 2025 Siqi Chen). Upstream is now v3.1.0;
+> this fork has not synced past 2.5.1.
+> Main local modifications: trigger description rewritten for model invocation; output
+> narrowed to the final text when another skill invokes it; the "Never truncate"
+> task step dropped; "Lead with facts, not drama" added to PERSONALITY AND SOUL;
+> §14 rewritten with a three-case em dash rule; four patterns added (§30-33);
+> the LLM-idiolect section removed; the worked example extracted to
+> `references/full-example.md`; a Vale pre-pass added to Process.
 
 # Humanizer: Remove AI Writing Patterns
 
