@@ -13,6 +13,7 @@ description: |
   and ownership restructuring. Pair with rust-quality for anti-pattern
   prevention and rust-review for gate-level review.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Rust Design — Type-Driven Workflow

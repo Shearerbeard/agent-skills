@@ -6,6 +6,7 @@ description: |
   these Python-specific probes. Always load before presenting Python code review
   findings to the user.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Python Review Gates

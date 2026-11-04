@@ -2,6 +2,7 @@
 name: prose-lint
 description: Run before committing or posting any prose written on the user's behalf — commit messages, PR and issue text, release notes, checked-in docs/README/skill prose, Slack/email drafts, and public docstrings or doc comments. Also use when asked to run Vale, prose lint, style lint, or to check AI tells/slop. Reports Vale findings and assigns each a disposition (fix, suppress with recorded justification, or promote to config); never rewrites — for the rewrite use humanizer.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Prose Lint

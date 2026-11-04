@@ -1,0 +1,13 @@
+claude-skills
+
+© 2026 Mike Shearer. MIT, see LICENSE.
+
+If you adapt or re-author a skill from this repository, keep a Lineage
+block naming the source:
+
+    Source: Shearerbeard/claude-skills (plugins/<domain>/skills/<skill>), <commit>
+    License: MIT
+    Changes: <what you changed>
+
+This repository keeps the same form upstream: the humanizer fork header names
+its source, license, and changes in this shape.

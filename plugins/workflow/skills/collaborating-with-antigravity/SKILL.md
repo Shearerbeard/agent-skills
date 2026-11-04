@@ -1,6 +1,7 @@
 ---
 name: collaborating-with-antigravity
 description: Delegate plan, prose, spec, architecture, product, and marketing review to the Google Antigravity (agy) CLI, through the agy MCP tools from Claude Code or a JSON-bridge script from other harnesses. Also covers sandboxed execution in a worktree and long agent loops that should not block the main conversation. Not for code review, which goes to the opencode CLI reviewers or the codex CLI. agy spend is budget-gated, so get explicit user approval once per session before dispatching.
+license: MIT
 ---
 
 # Collaborating with Antigravity

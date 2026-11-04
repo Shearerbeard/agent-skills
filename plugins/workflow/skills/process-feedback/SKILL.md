@@ -9,6 +9,7 @@ description: |
   repo. Not for skill-trigger retros (use skill-retro) and not for code
   review findings.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Process feedback

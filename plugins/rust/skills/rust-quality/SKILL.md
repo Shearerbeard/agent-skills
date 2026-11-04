@@ -10,6 +10,7 @@ description: |
   traits) and routes type modeling to rust-design. For formal reviews, use rust-review;
   it applies these rules as a gate checklist.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Rust Quality — LLM Anti-Pattern Prevention

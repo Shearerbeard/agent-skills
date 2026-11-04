@@ -13,6 +13,7 @@ description: |
   session already running inside OpenCode, which dispatches its
   subagents in-session instead.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # OpenCode CLI Delegation
