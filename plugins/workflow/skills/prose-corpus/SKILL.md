@@ -11,6 +11,7 @@ description: |
   the prose-reviewer bench. Not for process friction (use
   process-feedback) and not a rewrite skill (that is humanizer).
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Prose corpus capture

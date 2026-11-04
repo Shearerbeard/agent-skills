@@ -11,6 +11,7 @@ description: |
   and channel/stream guidance. Pair with rust-design for type
   modeling and rust-quality for anti-pattern prevention.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Rust Async — Concurrency Patterns

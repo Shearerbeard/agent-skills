@@ -12,6 +12,7 @@ description: >-
   near-black-plus-acid-accent look, purple gradients, excessive centered
   layouts, uniform rounded corners, Inter by default.
 compatibility: claude-code opencode kimi
+license: MIT
 ---
 
 # Design System

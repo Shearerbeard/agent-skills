@@ -11,6 +11,7 @@ description: |
   working repo. Pins no model on purpose. Where a repo ships a
   review-tooling document, that document decides which role codex serves.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # codex CLI Delegation

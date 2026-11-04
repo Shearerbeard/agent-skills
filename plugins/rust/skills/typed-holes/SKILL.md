@@ -17,6 +17,7 @@ description: |
   rust-design for the type modeling itself, rust-quality for
   anti-patterns in the filled bodies, and gate-probes at each gate.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Typed Holes and Layered Red-Green

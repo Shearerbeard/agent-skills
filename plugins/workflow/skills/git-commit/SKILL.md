@@ -2,6 +2,7 @@
 name: git-commit
 description: Use when writing a commit message or preparing a git commit. Covers conventional commit format, message structure, prose quality, and mandatory user review before committing. If a github-workflow skill is available, pair with it for branch naming and PR conventions.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Git Commit Conventions

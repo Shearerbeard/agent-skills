@@ -6,6 +6,7 @@ description: |
   structure, mod.rs cleanup, type co-location, and naming. Pair with rust-quality
   for code patterns inside modules.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Rust Module Layout

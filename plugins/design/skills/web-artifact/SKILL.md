@@ -2,6 +2,7 @@
 name: web-artifact
 description: Use when asked to create and share an infographic, flow chart, diagram page, or one-page visual explainer as a hosted web page with a URL the team can open - prehosted on GitHub Pages or Netlify, not a local file. Builds one self-contained HTML artifact (inline CSS, inline SVG diagrams, light and dark via prefers-color-scheme) from this skill's template, styled by a design-system token store, and publishes it to a stable URL. Each artifact keeps a small config and an embedded state block, so "refresh the infographic" re-gathers, redeploys the same URL, and reports only what changed. Not for multi-page sites, apps with backend state, or documents that belong in a repo wiki.
 compatibility: claude-code opencode kimi
+license: MIT
 ---
 
 # Web Artifact

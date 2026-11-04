@@ -2,6 +2,7 @@
 name: adr-review
 description: Use when writing, reviewing, or revising an architecture decision record - an ADR, MADR, design-decision note, a docs/adr/ file, or a DECISIONS.md entry. Checks decision structure (context, RFC-2119 drivers, considered options, chosen outcome, honest consequences), forward-compatible dependency links, and status lifecycle, then re-verifies that the record's time-sensitive premises still hold (premise-freshness). Chains prose-lint then humanizer on the prose before commit. For GitHub issues and PRs use github-workflow; this covers decision records.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # ADR Review

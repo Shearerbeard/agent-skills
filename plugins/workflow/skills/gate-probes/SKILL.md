@@ -9,6 +9,7 @@ description: |
   rust-review). Checks scope control, duplication, reviewability, verification,
   and residual risks.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Gate Probes

@@ -9,6 +9,7 @@ description: |
   the remote afterward.
 compatibility: claude-code opencode
 disable-model-invocation: true
+license: MIT
 ---
 
 # Rebase Hygiene

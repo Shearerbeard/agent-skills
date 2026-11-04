@@ -22,6 +22,7 @@ when_to_use: |
   new module, load this first. Entering plan mode without it means planning
   without the user's gates: scope interview, evidence check, verification
   framing, blast-radius scan, and the gate-probes review boundary.
+license: MIT
 ---
 
 # Plan Discipline

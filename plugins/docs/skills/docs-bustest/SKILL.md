@@ -2,6 +2,7 @@
 name: docs-bustest
 description: Use when reviewing, auditing, or updating documentation — checks whether a repo's docs are good enough for both a new human contributor and a cold AI agent to pick up the project without the maintainer. Use when editing README, CLAUDE.md, or any project docs, when completing work that changes public interfaces, or when asked to review docs quality. Also known as a "bus test" — could someone take over if you disappeared?
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Documentation Bus Test

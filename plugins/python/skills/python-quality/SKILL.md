@@ -7,6 +7,7 @@ description: |
   conventions. For formal reviews, use python-review; it applies these rules as a
   gate checklist.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Python Quality Standards

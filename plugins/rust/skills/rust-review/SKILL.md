@@ -6,6 +6,7 @@ description: |
   these Rust-specific probes. Always load before presenting Rust code review
   findings to the user.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Rust Review Gates

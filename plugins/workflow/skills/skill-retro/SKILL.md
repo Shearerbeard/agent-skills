@@ -6,6 +6,7 @@ description: |
   session. This reviews the skills, not the work: do not use for code review,
   sprint or project retros, or postmortems of the work itself.
 compatibility: claude-code opencode
+license: MIT
 ---
 
 # Skill Retro
