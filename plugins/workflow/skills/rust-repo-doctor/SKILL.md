@@ -31,7 +31,7 @@ Inventory:
   and `boardkit boards --json`.
 - Wiki deployments and consumers found through `wiki.toml` and
   `.wiki/manifest.toml`.
-- The local Boardkit, claude-skills, wiki-kit, and rust-holes
+- The local Boardkit, agent-skills, wiki-kit, and rust-holes
   checkouts when present.
 
 Deduplicate by resolved Git root. Never treat a worktree as a second project,
@@ -125,7 +125,7 @@ A complete result requires:
 
 - a current, cleanly readable rust-holes checkout;
 - `bin/check` passing;
-- the canonical `typed-holes` skill present in claude-skills;
+- the canonical `typed-holes` skill present in agent-skills;
 - the `~/.agents/skills/typed-holes` copy matching source; and
 - the Claude `rust` plugin copy matching source when Claude is installed.
 
@@ -151,7 +151,7 @@ pre-adoption deployments; never migrate them during an audit.
 
 ## 6. Personal skill deployment
 
-When claude-skills is present:
+When agent-skills is present:
 
 - run `bin/check-skills` and `bin/check-install`;
 - compare every name in `.manifest.my-skills` with its source tree;
@@ -166,8 +166,8 @@ manager says a version is current.
 
 Only when the user explicitly includes **fix-local**:
 
-- reinstall claude-skills and Boardkit through
-  `claude-skills/bin/install-skills`;
+- reinstall agent-skills and Boardkit through
+  `agent-skills/bin/install-skills`;
 - refresh ignored wiki skill renders for complete, already-adopted docks; and
 - add missing machine-local Boardkit overlays or checkout aliases after showing
   the proposed path.

@@ -1,11 +1,11 @@
-claude-skills
+agent-skills
 
 © 2026 Mike Shearer. MIT, see LICENSE.
 
 If you adapt or re-author a skill from this repository, keep a Lineage
 block naming the source:
 
-    Source: Shearerbeard/claude-skills (plugins/<domain>/skills/<skill>), <commit>
+    Source: Shearerbeard/agent-skills (plugins/<domain>/skills/<skill>), <commit>
     License: MIT
     Changes: <what you changed>
 

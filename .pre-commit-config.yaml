@@ -1,4 +1,4 @@
-# Pre-commit hooks for claude-skills.
+# Pre-commit hooks for agent-skills.
 # Deterministic quality gates that run on every commit.
 #
 # Install: brew install pre-commit betterleaks && bin/setup-hooks

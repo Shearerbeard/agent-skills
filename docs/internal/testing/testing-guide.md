@@ -30,7 +30,7 @@ Record which model was used for each test. Results are model-specific.
 
 Use a real project with actual code, not a synthetic test repo. The model's behavior changes when there's real code to search, real files to edit, and real context to consider. Good candidates:
 
-- This repo (claude-skills) for docs/prose skills
+- This repo (agent-skills) for docs/prose skills
 - A Rust project for rust-review, rust-quality, rust-modules
 - A Python project for python-review, python-quality
 

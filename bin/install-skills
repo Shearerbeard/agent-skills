@@ -206,7 +206,7 @@ if [ "$DO_AGENTS" = true ]; then
 
   # validate frontmatter on ALL source skills (not just filtered), against the
   # Agent Skills spec limits. Uses the installer's own copy of the validator so
-  # it travels with claude-skills even when installing a third-party source.
+  # it travels with agent-skills even when installing a third-party source.
   python3 "$SCRIPT_DIR/_check-frontmatter.py" "$PLUGINS_DIR"
 
   # per-source manifest

@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-echo "Installing pre-commit hooks for claude-skills..."
+echo "Installing pre-commit hooks for agent-skills..."
 echo ""
 
 if ! command -v pre-commit >/dev/null 2>&1; then

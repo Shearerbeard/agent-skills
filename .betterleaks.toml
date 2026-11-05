@@ -1,4 +1,4 @@
-# Betterleaks configuration for claude-skills.
+# Betterleaks configuration for agent-skills.
 # Extends the default rule set; add fingerprints to .betterleaksignore for
 # false positives as they appear.
 

@@ -187,7 +187,7 @@ Use `prose-lint` for mechanical findings. Use `humanizer` after that when change
 ## Structure
 
 ```
-claude-skills/
+agent-skills/
 ├── plugins/                     # Source of truth: one plugin per domain
 │   ├── python/                  # python-quality, python-review
 │   ├── rust/                    # rust-design, rust-async, rust-quality, rust-review, rust-modules
