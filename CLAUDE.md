@@ -34,24 +34,6 @@ printf '%s' "$docstring" | vale --no-global --ext=.md --ignore-syntax --output=J
 
 Use `prose-lint` for Vale workflows. Do not lint generated content, code blocks, schemas, exact API signatures, config examples, or intentional bad-prose examples unless the user asks. When invoked standalone, `humanizer` runs its own Vale pre-pass (step 0) so deterministic checks apply even without an upstream `prose-lint` call.
 
-## Active execution plan
-
-This round's execution plan lives at
-`docs/proposals/2026-07-04-plan-discipline-baseline-execution-plan.md`
-(audit round F: plan-discipline baseline on glm-5.2 + kimi-2.7 + opportunistic
-deepseek, plus the harness run-validity gate). Update its SESSION STATE block
-before ending each session. Remove this pointer section when the round's
-closing actions complete.
-
-## Next priority
-
-After round F: voice/persona in the skills hierarchy. Persona is portable data loaded by
-`humanizer` (opt-in, inert without a configured profile); no new skill; `github-workflow` gains
-exemplar-anchoring and an issue-scoped anti-staleness rule. Codex-vetted (ADOPT-WITH-CHANGES).
-Capture: `feedback/2026-07-17-claude-code-voice-persona-hierarchy/skill-retro.md`. Execution
-plan: `docs/proposals/2026-07-17-authoring-voice-integration-execution-plan.md`. Remove this
-section when the work lands.
-
 ## Planning
 
 Before non-trivial code work, load `plan-discipline`. It enforces the scope interview, verification framing, blast-radius scan, gate placement, and review checkpoints. It is the single source of truth for planning workflow; do not duplicate its rules here.

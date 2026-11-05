@@ -29,6 +29,7 @@ Model-invoked skills for Claude Code, OpenCode, Codex, Pi, and Kimi Code. Regist
 | `codex-cli` | workflow | "codex review" / second opinion / adversarial review | Un-gated codex delegation: sandboxed invocation, caller-owned deadline, prompt contract, validity rule, no model pins |
 | `collaborating-with-antigravity` | workflow | delegating plan / prose / spec / architecture review to agy | Budget-gated Antigravity delegation: ordered spend-and-doctor preflight, MCP or bridge transport, long-job supervision, the mode table |
 | `process-feedback` | workflow | upstream toolkit friction | Record a process finding locally and file it as a GitHub issue on the upstream repo |
+| `prose-corpus` | workflow | "capture this prose" / prose feedback | Snapshot prose verbatim into boardkit's bench corpus inbox for the prose-reviewer bench |
 | `design-system` | design | brand colors, design tokens, visual identity, theme | Three-pass token authoring (philosophy, tokens, critique) into a harness-neutral store; anti-slop calibration |
 | `web-artifact` | design | infographic, flow chart, shareable visual page | Self-contained HTML artifacts published to GitHub Pages or Netlify, with config registry and refresh deltas |
 
@@ -119,6 +120,8 @@ This pattern keeps the skill as the single source of truth. Duplicating skill ru
 
 The installer registers the marketplace with Claude Code and flat-copies skills to `~/.agents/skills/` for [OpenCode](https://opencode.ai/docs/skills/), [Codex](https://developers.openai.com/codex/skills/), [Pi](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/skills.md), and [Kimi Code](https://github.com/MoonshotAI/kimi-cli). All four read `~/.agents/skills/` as a global user-scope location per the [Agent Skills standard](https://agentskills.io/specification); Kimi Code's parser accepts the same frontmatter spellings (`when_to_use`, `disable-model-invocation`) via its metadata aliases.
 
+Requirements: `bash`, `jq`, and `python3` with PyYAML (the frontmatter validator). The `claude` CLI is optional; without it the installer edits `~/.claude/settings.json` directly. Set `INSTALL_SKILLS_CLAUDE_CLI=0` to force that fallback even when the CLI is present.
+
 ```bash
 ./bin/install-skills /path/to/this/repo
 ```
@@ -140,6 +143,8 @@ Options:
 Per-source manifests prevent cross-pruning when multiple repos share `~/.agents/skills/`. Third-party skills (installed via npx or other tools) are never touched.
 
 ## Quality Gates
+
+There is no CI: every gate below runs locally and is opt-in per checkout.
 
 ### Pre-commit Hooks (Recommended)
 
