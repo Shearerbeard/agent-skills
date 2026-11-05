@@ -24,6 +24,7 @@ Model-invoked skills for Claude Code, OpenCode, Codex, Pi, and Kimi Code. Regist
 | `skill-retro` | workflow | "retro my skills" | Audit how skills triggered and performed in a session; files retros under `feedback/` |
 | `git-commit` | workflow | committing / commit messages | Conventional commit format, prose quality chain, mandatory user review |
 | `rebase-hygiene` | workflow | explicit invocation only | Fetch-first rebase ritual: pre-vet conflicts, pre-planned resolutions, verify the push |
+| `rust-repo-doctor` | workflow | explicit invocation only | Audit Rust repos, gates, boards, skill installs, wiki docks, and local overrides across a machine |
 | `opencode-cli` | workflow | delegating code work / review to OpenCode | CLI-only delegation: staging recipe, model pins from config, `--agent` trap, deadlines, validity rule |
 | `codex-cli` | workflow | "codex review" / second opinion / adversarial review | Un-gated codex delegation: sandboxed invocation, caller-owned deadline, prompt contract, validity rule, no model pins |
 | `collaborating-with-antigravity` | workflow | delegating plan / prose / spec / architecture review to agy | Budget-gated Antigravity delegation: ordered spend-and-doctor preflight, MCP or bridge transport, long-job supervision, the mode table |
@@ -191,7 +192,7 @@ claude-skills/
 │   ├── python/                  # python-quality, python-review
 │   ├── rust/                    # rust-design, rust-async, rust-quality, rust-review, rust-modules
 │   ├── docs/                    # docs-bustest, adr-review, prose-lint, humanizer, mermaid
-│   ├── workflow/                # plan-discipline, gate-probes, skill-retro, git-commit, rebase-hygiene, opencode-cli, codex-cli, collaborating-with-antigravity, process-feedback
+│   ├── workflow/                # plan-discipline, gate-probes, skill-retro, git-commit, rebase-hygiene, rust-repo-doctor, opencode-cli, codex-cli, collaborating-with-antigravity, process-feedback
 │   ├── design/                  # design-system, web-artifact
 │   ├── vale-lsp/                # Vale LSP config (no skills)
 │   └── haskell-lsp/             # Haskell LSP config (no skills)
