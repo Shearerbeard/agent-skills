@@ -24,6 +24,7 @@ docs/research/
 docs/proposals/
 feedback/*
 !feedback/README.md
+.review/
 
 # Temporary test repositories
 temp-*/
