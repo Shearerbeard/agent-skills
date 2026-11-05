@@ -257,5 +257,103 @@ fi
 
 echo "  Claude plugin CLI path OK"
 
+echo "=== Test 8: intra-skill stale files are removed ==="
+# A file deleted from a source skill must disappear on reinstall; whole-skill
+# pruning does not cover files inside a skill that still exists.
+mkdir -p "$dest/python-quality"
+printf 'stale\n' > "$dest/python-quality/stale-extra.md"
+
+HOME="$TMP_HOME" "$ROOT/bin/install-skills" "$ROOT" >"$log_file" 2>&1
+
+if [ -f "$dest/python-quality/stale-extra.md" ]; then
+  echo "FAIL: reinstall left a stale file inside a skill directory" >&2
+  exit 1
+fi
+
+echo "  intra-skill staleness OK"
+
+echo "=== Test 9: filtered install preserves other source skills ==="
+HOME="$TMP_HOME" "$ROOT/bin/install-skills" "$ROOT" --skills mermaid >"$log_file" 2>&1
+
+if [ ! -d "$dest/python-quality" ]; then
+  echo "FAIL: --skills install pruned an unrelated source skill" >&2
+  exit 1
+fi
+if ! grep -qx "python-quality" "$dest/.manifest.my-skills"; then
+  echo "FAIL: --skills install dropped unrelated skills from the manifest" >&2
+  exit 1
+fi
+if grep -q "removed stale: python-quality" "$log_file"; then
+  echo "FAIL: --skills install reported an unrelated skill as stale" >&2
+  exit 1
+fi
+
+echo "  filtered install preserves other source skills OK"
+
+echo "=== Test 10: unowned skill-name collision is refused ==="
+collide_src="$TMP_HOME/collide-source"
+mkdir -p "$collide_src/.claude-plugin" "$collide_src/plugins/git/.claude-plugin" \
+  "$collide_src/plugins/git/skills/collision-skill"
+cat > "$collide_src/.claude-plugin/marketplace.json" <<'EOF'
+{"name": "collide-source", "plugins": [{"name": "git", "source": "./plugins/git"}]}
+EOF
+echo '{"name":"git"}' > "$collide_src/plugins/git/.claude-plugin/plugin.json"
+cat > "$collide_src/plugins/git/skills/collision-skill/SKILL.md" <<'EOF'
+---
+name: collision-skill
+description: a skill that collides with an unowned directory
+---
+collision content
+EOF
+mkdir -p "$dest/collision-skill"
+printf 'unowned\n' > "$dest/collision-skill/SKILL.md"
+
+if HOME="$TMP_HOME" "$ROOT/bin/install-skills" "$collide_src" --agents-only >"$log_file" 2>&1; then
+  echo "FAIL: installer overwrote an unowned skill directory" >&2
+  exit 1
+fi
+if [ "$(cat "$dest/collision-skill/SKILL.md")" != "unowned" ]; then
+  echo "FAIL: unowned skill content was modified" >&2
+  exit 1
+fi
+
+echo "  unowned collision refused OK"
+
+echo "=== Test 11: duplicate skill names across plugins are refused ==="
+dup_src="$TMP_HOME/dup-source"
+mkdir -p "$dup_src/.claude-plugin" \
+  "$dup_src/plugins/a/.claude-plugin" "$dup_src/plugins/a/skills/dup-skill" \
+  "$dup_src/plugins/b/.claude-plugin" "$dup_src/plugins/b/skills/dup-skill"
+cat > "$dup_src/.claude-plugin/marketplace.json" <<'EOF'
+{"name": "dup-source", "plugins": [{"name": "a", "source": "./plugins/a"}, {"name": "b", "source": "./plugins/b"}]}
+EOF
+echo '{"name":"a"}' > "$dup_src/plugins/a/.claude-plugin/plugin.json"
+echo '{"name":"b"}' > "$dup_src/plugins/b/.claude-plugin/plugin.json"
+for p in a b; do
+  cat > "$dup_src/plugins/$p/skills/dup-skill/SKILL.md" <<EOF
+---
+name: dup-skill
+description: duplicate skill from plugin $p
+---
+content from $p
+EOF
+done
+
+if HOME="$TMP_HOME" "$ROOT/bin/install-skills" "$dup_src" --agents-only >"$log_file" 2>&1; then
+  echo "FAIL: duplicate skill names were not refused" >&2
+  exit 1
+fi
+if ! grep -q "duplicate skill name" "$log_file"; then
+  echo "FAIL: duplicate-name error message missing" >&2
+  cat "$log_file" >&2
+  exit 1
+fi
+if [ -d "$dest/dup-skill" ]; then
+  echo "FAIL: duplicate-name source installed a skill anyway" >&2
+  exit 1
+fi
+
+echo "  duplicate names refused OK"
+
 echo ""
 echo "All install checks passed ($expected skills)"

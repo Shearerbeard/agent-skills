@@ -73,6 +73,12 @@ if [ -z "$SOURCE_PATH" ]; then
   usage
 fi
 
+# --- dependency preflight ---
+if ! command -v jq >/dev/null 2>&1; then
+  echo "error: jq is required to read marketplace metadata" >&2
+  exit 1
+fi
+
 # resolve to absolute path
 SOURCE_PATH="$(cd "$SOURCE_PATH" && pwd)"
 PLUGINS_DIR="$SOURCE_PATH/plugins"
@@ -164,12 +170,36 @@ if [ "$DO_AGENTS" = true ]; then
     exit 0
   fi
 
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "error: python3 is required to validate skill frontmatter" >&2
+    exit 1
+  fi
+  if ! python3 -c 'import yaml' >/dev/null 2>&1; then
+    echo "error: python3 is missing PyYAML (pip install pyyaml)" >&2
+    exit 1
+  fi
+
   # collect source skill names
   shopt -s nullglob
   SOURCE_NAMES=()
+  name_seen() {
+    local needle="$1"
+    local n
+    [ "${#SOURCE_NAMES[@]}" -gt 0 ] || return 1
+    for n in "${SOURCE_NAMES[@]}"; do
+      [ "$n" = "$needle" ] && return 0
+    done
+    return 1
+  }
+
   for skill_dir in "$PLUGINS_DIR"/*/skills/*; do
     [ -d "$skill_dir" ] || continue
     skill_name="$(basename "$skill_dir")"
+    # Skills install flat, so two plugins cannot both provide one name.
+    if name_seen "$skill_name"; then
+      echo "error: duplicate skill name '$skill_name' across plugins; names must be unique" >&2
+      exit 1
+    fi
     SOURCE_NAMES+=("$skill_name")
   done
   shopt -u nullglob
@@ -178,6 +208,11 @@ if [ "$DO_AGENTS" = true ]; then
     echo "no source skills under $PLUGINS_DIR" >&2
     exit 1
   fi
+
+  # Full source inventory, kept before --skills narrows the install set. Prune
+  # and manifest decisions must use this, not the filtered list, or a filtered
+  # refresh reads every unselected skill as stale.
+  SOURCE_ALL=("${SOURCE_NAMES[@]}")
 
   # apply --skills filter
   if [ -n "$SKILLS_FILTER" ]; then
@@ -213,11 +248,40 @@ if [ "$DO_AGENTS" = true ]; then
   mkdir -p "$DEST"
   manifest="$DEST/.manifest.${MARKETPLACE_NAME}"
 
+  # Names this source previously installed. Anything else already in $DEST owes
+  # its presence to another source or a third-party installer and is off limits.
+  owned=()
+  if [ -f "$manifest" ]; then
+    while IFS= read -r old_name; do
+      [ -z "$old_name" ] && continue
+      owned+=("$old_name")
+    done < "$manifest"
+  fi
+
+  owned_by_manifest() {
+    local needle="$1"
+    local n
+    [ "${#owned[@]}" -gt 0 ] || return 1
+    for n in "${owned[@]}"; do
+      [ "$n" = "$needle" ] && return 0
+    done
+    return 1
+  }
+
+  # Preflight every destination before pruning or copying, so a refused
+  # collision leaves the install untouched and retryable.
+  for skill_name in "${SOURCE_NAMES[@]}"; do
+    if [ -d "$DEST/$skill_name" ] && ! owned_by_manifest "$skill_name"; then
+      echo "error: $DEST/$skill_name is not owned by marketplace '$MARKETPLACE_NAME'; refusing to overwrite" >&2
+      exit 1
+    fi
+  done
+
   # prune: only remove skills that THIS source previously installed but no longer provides
   in_source() {
     local needle="$1"
     local n
-    for n in "${SOURCE_NAMES[@]}"; do
+    for n in "${SOURCE_ALL[@]}"; do
       [ "$n" = "$needle" ] && return 0
     done
     return 1
@@ -227,8 +291,14 @@ if [ "$DO_AGENTS" = true ]; then
   if [ -f "$manifest" ]; then
     while IFS= read -r old_name; do
       [ -z "$old_name" ] && continue
+      # The manifest is script-written, but never let a corrupted entry walk
+      # outside $DEST.
+      if [ "$old_name" != "$(basename "$old_name")" ]; then
+        echo "  skipped unsafe manifest entry: $old_name" >&2
+        continue
+      fi
       if ! in_source "$old_name" && [ -d "$DEST/$old_name" ]; then
-        rm -rf "$DEST/$old_name"
+        rm -rf "${DEST:?}/${old_name:?}"
         echo "  removed stale: $old_name"
         pruned=$((pruned + 1))
       fi
@@ -244,14 +314,28 @@ if [ "$DO_AGENTS" = true ]; then
       echo "internal error: source dir missing for $skill_name" >&2
       exit 1
     fi
+    # Replace rather than merge: a file deleted from the source skill must not
+    # survive the copy.
+    rm -rf "${DEST:?}/${skill_name:?}"
     mkdir -p "$DEST/$skill_name"
     cp -R "$src"/. "$DEST/$skill_name/"
     installed=$((installed + 1))
     echo "  $skill_name"
   done
 
-  # write manifest (only the skills we installed)
-  printf '%s\n' "${SOURCE_NAMES[@]}" | sort -u > "$manifest"
+  # write manifest: installed this run, plus previously manifested skills the
+  # source still provides. A filtered run must not forget the rest.
+  manifest_names=("${SOURCE_NAMES[@]}")
+  if [ -f "$manifest" ]; then
+    while IFS= read -r old_name; do
+      [ -z "$old_name" ] && continue
+      [ "$old_name" = "$(basename "$old_name")" ] || continue
+      if in_source "$old_name"; then
+        manifest_names+=("$old_name")
+      fi
+    done < "$manifest"
+  fi
+  printf '%s\n' "${manifest_names[@]}" | sort -u > "$manifest"
 
   echo ""
   echo "Installed $installed skill(s) to $DEST"
