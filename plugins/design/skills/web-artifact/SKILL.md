@@ -1,6 +1,6 @@
 ---
 name: web-artifact
-description: Use when asked to create and share an infographic, flow chart, diagram page, or one-page visual explainer as a hosted web page with a URL the team can open - prehosted on GitHub Pages or Netlify, not a local file. Builds one self-contained HTML artifact (inline CSS, inline SVG diagrams, light and dark via prefers-color-scheme) from this skill's template, styled by a design-system token store, and publishes it to a stable URL. Each artifact keeps a small config and an embedded state block, so "refresh the infographic" re-gathers, redeploys the same URL, and reports only what changed. Not for multi-page sites, apps with backend state, or documents that belong in a repo wiki.
+description: Use when asked to create and share an infographic, flow chart, diagram page, or one-page visual explainer as a hosted web page with a URL the team can open - prehosted on GitHub Pages, Netlify, or the synthetic-test-only artifact-host backend, not a local file. Builds one self-contained HTML artifact (inline CSS, inline SVG diagrams, light and dark via prefers-color-scheme) from this skill's template, styled by a design-system token store, and publishes it to a stable URL. Each artifact keeps a small config and an embedded state block, so "refresh the infographic" re-gathers, redeploys the same URL, and reports only what changed. Not for multi-page sites, apps with backend state, or documents that belong in a repo wiki.
 compatibility: claude-code opencode kimi
 license: MIT
 ---
@@ -63,7 +63,9 @@ file); keep this file host-neutral.
    say that in the report and invite the user to eyeball the published URL.
 
 6. **Publish** per backends.md, using the backend recorded in the config
-   (github-pages or netlify). Publishing pushes content to a remote host:
+   (github-pages, netlify, or artifact-host). artifact-host is only for
+   synthetic test content; never put real private content there. Publishing
+   pushes content to a remote host:
    before the FIRST publish of any slug, confirm the target (repo or site)
    and visibility with the user; redeploys to the recorded URL need no
    re-confirmation. The URL must be stable - every redeploy lands on the same
@@ -85,7 +87,8 @@ A short markdown file at ~/.local/share/web-artifact/<slug>/config.md:
 - **Sources** - where live content comes from (repo paths, gh queries, docs),
   date-tagged when a human verified them.
 - **Backend settings** - the backend-specific block from backends.md (repo
-  and directory for github-pages; site id for netlify).
+  and directory for github-pages; site id for netlify; host, credential
+  reference, and slug for artifact-host).
 - **Notes** (optional) - dated gotchas for future refreshes.
 
 Never block a first build on the config: gather, build, publish, then write
@@ -174,5 +177,6 @@ than ~10 nodes, split it into a figure plus a breakdown table.
 - template.html - the self-contained skeleton: token-variable CSS with
   built-in defaults, header, stat grid, figure slot, breakdown table,
   timeline, footer, and the state block.
-- backends.md - the publishing backends: github-pages (default) and netlify,
-  with first-publish setup, redeploy commands, and failure handling.
+- backends.md - the publishing backends: github-pages (default), netlify,
+  and artifact-host, with first-publish setup, redeploy commands, and failure
+  handling.
