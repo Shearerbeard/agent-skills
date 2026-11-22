@@ -31,7 +31,7 @@ Model-invoked skills for Claude Code, OpenCode, Codex, Pi, and Kimi Code. Regist
 | `process-feedback` | workflow | upstream toolkit friction | Record a process finding locally and file it as a GitHub issue on the upstream repo |
 | `prose-corpus` | workflow | "capture this prose" / prose feedback | Snapshot prose verbatim into boardkit's bench corpus inbox for the prose-reviewer bench |
 | `design-system` | design | brand colors, design tokens, visual identity, theme | Three-pass token authoring (philosophy, tokens, critique) into a harness-neutral store; anti-slop calibration |
-| `web-artifact` | design | infographic, flow chart, shareable visual page | Self-contained HTML artifacts published to GitHub Pages, Netlify, or synthetic-test-only artifact-host, with config registry and refresh deltas |
+| `web-artifact` | design | infographic, flow chart, shareable visual page | Self-contained HTML artifacts published to GitHub Pages or Netlify, with config registry and refresh deltas |
 
 Two more plugins ship LSP configs rather than skills: `vale-lsp` (Vale prose diagnostics) and `haskell-lsp` (Haskell Language Server).
 
