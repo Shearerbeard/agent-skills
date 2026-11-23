@@ -74,6 +74,7 @@ the plan must say so.
 - It must find issues or explicitly sign off
 - Its model must differ from the model that authored the work under review; the pre-flight delegation inventory is what makes that allocation possible, so a reviewer this gate depends on was already named and confirmed reachable at planning time
 - Combine its findings with Gate S results
+- Apply `gate-probes`' review-convergence limit to plan and code reviews.
 
 **Gate M — Manual testing by agent**
 - Agent exercises the feature using realistic inputs

@@ -25,6 +25,15 @@ After the universal probes, route to the next applicable skill without repeating
 - User-facing prose without a docs structure review need: run `prose-lint`; then run `humanizer` if the prose will be checked in, published, or sent on the user's behalf
 - Writing the commit message itself: run `git-commit`
 
+## Review convergence
+
+Limit each decision scope to three review rounds: initial review plus two
+repair verifications. Verify prior repairs and introduced regressions
+without reopening accepted ground. If unresolved, stop for a user ruling with findings, dispositions and
+available cumulative usage. Reviewer, transport or wording changes do not
+reset the count. A FAIL consisting only of new scope escalates immediately.
+Failed dispatch attempts are a separate limit.
+
 ## Quality probes
 
 1. Are we sprawling code unnecessarily?
