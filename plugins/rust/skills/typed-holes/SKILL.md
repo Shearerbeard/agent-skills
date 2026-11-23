@@ -36,9 +36,10 @@ Two layers of machine-tracked holes, filled over time.
 
 The layers are complements, not alternatives. The compiler checks the
 surface while the hole inventory tracks the behavior holes; the failing
-golden tests track rendering holes. Layer 1 alone is a complete practice
-for a module with no rendered output. Layer 2 alone is just snapshot
-testing.
+golden tests track rendering holes. A module without rendered output uses
+Layer 1 with spec-derived behavioral tests. Layer 2 adds whole-frame
+goldens where emitted artifacts exist; snapshot testing alone is not the
+complete practice.
 
 Everything needed to run the practice is in this skill. A companion
 repo of templates and worked exemplars augments it where the user has
@@ -47,6 +48,28 @@ writing or updating that companion repo's playbook, templates, or
 exemplars, load this skill first and treat it as the canonical statement
 of the practice; divergence between the two is a defect in the
 companion, not a fork of the practice.
+
+## Dispatch inputs and acceptance
+
+Before authoring, name the specification path/revision and its approval
+state, the exact input commit, allowed edits and required checks. Missing
+or unapproved requirements return to the spec owner; a skeleton is not a
+way to infer a product specification. Verify the assigned agent can load
+this skill through its effective permissions. An executor without skill
+loading receives the complete applicable rules quoted in its brief.
+Installation alone does not establish access.
+
+Assign test authoring and integration-source repairs to named roles before
+fills start, with reviewers eligible for every actual author in the range.
+Git integration by the board owner is distinct from authoring glue or
+conflict resolutions. A takeover updates authorship and reviewer eligibility.
+
+Map each test to the bodies it requires. Group or order coupled fills so
+each assignment can pass its named tests. Record remaining holes and the
+expected intermediate red set separately from new failures. The exact
+Clippy command must agree with that partition: remove the todo allowance
+only when no remaining authorized holes fall under the command's scope.
+The complete candidate must pass all required checks.
 
 ## Layer 1: the typed-holes skeleton
 
@@ -258,6 +281,29 @@ Practically: accept no snapshot until the body it covers is implemented.
 Run the suite with snapshot auto-acceptance disabled in CI and at every
 gate, so an unreviewed accepted snapshot cannot pass.
 
+### Behavioral evidence for every fill
+
+Name an owner for spec-derived tests before implementation, including work
+with no rendered artifact. Derive expected results from the specification,
+never from the response under test. First-red failure on a `todo!()` proves
+reachability only. For a critical limit, exclusion or representation
+conversion, name a plausible wrong implementation and retain evidence that
+the owning test rejects it. Select critical counterexamples rather than
+requiring mutation of every assertion.
+
+When a storage conversion collapses distinct domain values, cover the exact
+boundary, the first value beyond it, empty input and a colliding stored
+value. If normal ingress cannot construct that row, use a backend-local
+fixture and explain why it is needed. Distinguish a storage-representable
+boundary fixture from a synthetic state invented for production logic.
+Whole-frame goldens remain for emitted artifacts; behavioral tests own
+downstream semantics.
+
+Review this evidence inside the applicable code review, not an extra panel.
+Keep source inspection, owner-executed checks and reviewer-executed checks
+distinct. A permission denial or missing prerequisite is an unverified
+check, not a defect in the diff or a passing runtime check.
+
 ### The coverage manifest
 
 Commit a manifest that maps every surface and branch to the fixture
@@ -313,14 +359,13 @@ mode that asserts nothing. Record both transcripts in the design record.
 1. Skeleton commit (Layer 1), green under check, clippy, and fmt.
 2. Design panel; numbered findings with per-finding dispositions; repairs
    land before any body.
-3. Golden frames written to fail first from the spec (Layer 2), plus the
-   coverage manifest.
+3. Spec-derived tests written to fail first, with named ownership and
+   coverage. Use Layer 2 whole-frame goldens where an emitted artifact exists.
 4. Fill bodies one at a time, running `cargo check` after each to narrow
    the next hole's types. Each fill sweeps its own `#[expect]` markers,
-   accounts for its lines in the hole inventory, and flips its golden
-   frames from red to green. The two signals must agree: a body that
-   compiles clean while its golden stays red is a rendering hole the
-   compiler was always blind to, which is the case Layer 2 exists for.
+   accounts for its lines in the hole inventory, and makes its named tests
+   pass. Where Layer 2 applies, a body that compiles while its golden stays
+   red still has a rendering hole the compiler cannot see.
 5. Remove the module-level `#![allow(dead_code)]` slice by slice as the
    surface goes live, and close the inventory: `clippy::todo` at deny, or
    a `grep` that returns nothing.
@@ -328,7 +373,7 @@ mode that asserts nothing. Record both transcripts in the design record.
 Where the work is split across cards or issues, the skeleton is one unit
 of work and each fill is another. The skeleton unit's acceptance is
 "compiles, lints, panel dispositioned"; a fill unit's acceptance is "its
-markers swept and its inventory lines accounted for, with its goldens
+markers swept and its inventory lines accounted for, with its named tests
 green". Run `gate-probes` at those boundaries, and `rust-quality` over
 each filled body.
 
@@ -347,6 +392,9 @@ the brief, fill the angle brackets, and keep only the half that matches
 the unit.
 
 > **Skeleton unit.**
+>
+> Inputs: <approved spec path/revision and approval>, <input commit>,
+> <allowed files>, <exact checks>. Stop for missing inputs or scope changes.
 >
 > 1. Lay the full type surface: real signatures, derives, `From`/`Into`
 >    impls, leaf types. No placeholder `String` for a type not yet
@@ -378,16 +426,22 @@ the unit.
 >
 > **Fill unit.**
 >
+> Inputs: <spec revision>, <input commit>, <named tests and required bodies>,
+> <remaining holes and expected intermediate red set>, <exact checks>.
+>
 > 1. Fill only the bodies named here: `<list>`. Changing a signature,
 >    derive, or type means the skeleton was wrong: stop and report it.
 > 2. Remove each filled function's `#[expect]` marker by hand. A body
 >    that still ignores an argument keeps its marker silent, so sweep
 >    rather than waiting for a warning.
-> 3. The golden tests covering these bodies are committed and already
->    failing. The unit is done when they pass with snapshot
->    auto-acceptance disabled.
+> 3. Spec-derived tests covering these bodies are committed and already
+>    failing. Behavioral tests apply even without a rendered artifact.
+>    The unit is done when its named tests pass, with snapshot
+>    auto-acceptance disabled where snapshots apply.
 > 4. Do not add, edit, or re-accept a snapshot. A golden that looks wrong
 >    is a finding to report, not a file to update.
+> 5. Preserve the tests and critical counterexample evidence supplied by the
+>    test author. A suspected oracle defect returns to that owner.
 >
 > **API conventions, both units** (drift accumulates across executors and
 > is checked at review): `AsRef` impls rather than inherent `as_str` on

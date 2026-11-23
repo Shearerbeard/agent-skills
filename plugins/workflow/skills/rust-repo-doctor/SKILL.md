@@ -129,6 +129,14 @@ A complete result requires:
 - the `~/.agents/skills/typed-holes` copy matching source; and
 - the Claude `rust` plugin copy matching source when Claude is installed.
 
+For a planned skeleton dispatch, also report its spec path/revision and
+approval state, then inspect the assigned agent's effective skill permissions
+and project overrides. Distinguish installed-but-inaccessible from absent.
+Confirm access with a short skill/read probe when authorized; configuration
+inspection alone is not a runtime pass. If the executor cannot load skills,
+verify its brief quotes the complete applicable rules. Missing spec or
+access evidence blocks that dispatch, not unrelated repository checks.
+
 The seeded-defect script documents a BSD `sed` assumption. On GNU/Linux, test
 it in a temporary copy with only `sed -i ''` changed to `sed -i`; never patch
 the checkout just to run the probe. Report the native portability issue and
