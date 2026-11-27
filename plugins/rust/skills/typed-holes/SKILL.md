@@ -227,7 +227,10 @@ to defend.
 
 ## Skeleton review
 
-rust-write lays the complete type and function surface against the approved specification, using todo!() only for real behavior and implementing trivial accessors. The skeleton lands as its own retrievable commit after the assigned compile/build, lint, and formatting checks pass. One fresh rust-reviewer session covers both invalid-state and logic/seam questions, with a model independent of every actual author. Preserve both question sets. A second seat is optional only when selected by the operator. The coordinator dispositions findings and repairs before tests or fills proceed. A U gate for types and invariant propagation may be selected in the card or DAG.
+One fresh Rust reviewer checks the compiled skeleton commit against the
+approved spec. The same reviewer covers both question sets below. The
+coordinator records dispositions and routes repairs before tests or fills.
+The card or DAG may include a user gate for types and invariants.
 
 Invalid-states questions:
 
