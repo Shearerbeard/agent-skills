@@ -10,7 +10,7 @@ description: |
   cards, issues, or delegated executors. Contains the two-layer
   practice: Layer 1 lays the full Rust type surface with todo!() bodies
   that must pass cargo check and clippy as their own commit, gated by a
-  two-reviewer design panel; Layer 2 writes whole-frame golden tests
+  one-reviewer skeleton review; Layer 2 writes whole-frame golden tests
   from the spec so they fail on arrival. Also covers the #[expect]
   marker convention, the type-to-business-rule map, the coverage
   manifest, fill order, and the known limits of both signals. Pair with
@@ -36,9 +36,10 @@ Two layers of machine-tracked holes, filled over time.
 
 The layers are complements, not alternatives. The compiler checks the
 surface while the hole inventory tracks the behavior holes; the failing
-golden tests track rendering holes. Layer 1 alone is a complete practice
-for a module with no rendered output. Layer 2 alone is just snapshot
-testing.
+golden tests track rendering holes. A module without rendered output uses
+Layer 1 with spec-derived behavioral tests. Layer 2 adds whole-frame
+goldens where emitted artifacts exist; snapshot testing alone is not the
+complete practice.
 
 Everything needed to run the practice is in this skill. A companion
 repo of templates and worked exemplars augments it where the user has
@@ -47,6 +48,71 @@ writing or updating that companion repo's playbook, templates, or
 exemplars, load this skill first and treat it as the canonical statement
 of the practice; divergence between the two is a defect in the
 companion, not a fork of the practice.
+
+## Execution flow
+
+```text
+skeleton (compile/build) -> skeleton review -> optional types U
+  -> tests (compile, then named red) -> test review
+  -> fills (green + no assigned holes) -> implementation review
+  -> integration (candidate checks + review any new code)
+  -> optional approved Frontier -> final U
+```
+
+The coordinator judges every review return and routes repairs or API/scope
+friction to the owning stage. The board process owns review-slot and
+delivery accounting; standalone work names its coordinator explicitly.
+
+## Dispatch inputs and acceptance
+
+Before authoring, name the specification path/revision and its approval
+state, the exact input commit, allowed edits and required checks. Missing
+or unapproved requirements return to the spec owner; a skeleton is not a
+way to infer a product specification. Verify the assigned agent can load
+this skill through its effective permissions. An executor without skill
+loading receives the complete applicable rules quoted in its brief.
+Installation alone does not establish access.
+
+Assign test authoring and integration-source repairs to named roles before
+fills start, with reviewers eligible for every actual author in the range.
+Git integration by the board owner is distinct from authoring glue or
+conflict resolutions. A takeover updates authorship and reviewer eligibility.
+
+Map each test to the bodies it requires. Group or order coupled fills so
+each assignment can pass its named tests; a test needing a later body stays
+in the intermediate red set. Record that set and remaining holes separately
+from new failures. The exact
+Clippy command must agree with that partition: remove the todo allowance
+only when no remaining authorized holes fall under the command's scope.
+The complete candidate must pass all required checks.
+
+The test assignment names who maintains skeleton lint markers made obsolete
+by new test references and either authorizes that mechanical edit or returns
+it to the type owner. New compile/lint failures remain unexpected even when
+hole failures are authorized.
+
+## Shared assignment boundary
+
+Every assignment names the approved specification revision, input commit, allowed files, permitted edits, required checks, and expected outputs. Test authors and fillers stop the affected work if completion requires changing the approved API, invariants, dependencies, visibility, fixture access, or assignment scope. Return the smallest failing usage, expected contract, observed blocker, and decision needed to the coordinator. Do not add a workaround, weaken expectations, or reinterpret the brief to make it pass. The coordinator determines whether the repair belongs to the skeleton owner, test owner, filler, or operator, and authorizes the revised scope before redispatch. Independent in-scope work may continue.
+
+## Test-author assignment
+
+Partition authoring by coherent behavior and fixture prerequisites before
+dispatch: ordinary contract tests and backend-boundary fixtures may need
+different inputs. Return a new dependency, platform prerequisite or missing
+seam to the owner before adopting a workaround. A changed implementation
+shape returns for scope review; estimates are not line quotas.
+
+Derive complete expected values from the approved spec and fixture inputs.
+An append return reused as the expected read result can hide a defect shared
+by both paths. Check returned values and persisted/replayed values against
+independent expectations where the contract requires both.
+
+Use the smallest scenarios that distinguish the named wrong implementations.
+Share repetitive setup within a suite without building a parallel implementation.
+Keep separate adapter and runtime checks when they reject different failures.
+Record the spec-to-test/body map once, with exclusions and evidence links;
+reference the spec instead of copying its narrative into tests and manifests.
 
 ## Layer 1: the typed-holes skeleton
 
@@ -159,22 +225,14 @@ A type that cannot be given a one-line business rule is a signal, not a
 formatting problem: it is usually two types, or a bag with no invariant
 to defend.
 
-## The design panel
+## Skeleton review
 
-Between the skeleton commit and the first implemented body, the types
-pass a review panel of **two** context-isolated reviewers.
+One fresh Rust reviewer checks the compiled skeleton commit against the
+approved spec. The same reviewer covers both question sets below. The
+coordinator records dispositions and routes repairs before tests or fills.
+The card or DAG may include a user gate for types and invariants.
 
-1. **Adversarial invalid-states reviewer.** Applies the design rules
-   against the types: which invalid states can these types still
-   represent? Does any type encode a state production cannot reach?
-2. **Second-model logic reviewer.** A different model family from the
-   author, reading the skeleton for logic, ordering, and seam errors.
-
-Both seats read the skeleton commit in a fresh context, with no memory of
-the design conversation. Give each the file paths, the design record, and
-its own question set.
-
-Seat 1, invalid states:
+Invalid-states questions:
 
 - Which invalid states can these types still represent? Try to construct
   a well-typed, meaningless value. Cross-field combinations count.
@@ -196,7 +254,7 @@ Seat 1, invalid states:
 - Are public fields confined to structs where every field is itself a
   validated type?
 
-Seat 2, logic and seams:
+Logic and seams questions:
 
 - Spec-to-type mismatches: a spec rule with no type enforcing it, or a
   type enforcing what the spec does not say.
@@ -210,8 +268,8 @@ Seat 2, logic and seams:
 - Error modeling: does the enum distinguish the failure modes a caller
   acts on differently, and collapse the ones it must not?
 
-Both seats return numbered findings, each marked blocking or minor, each
-with the repair the reviewer would make. An empty return is a failed
+The reviewer returns numbered findings, each marked blocking or minor,
+each with the repair the reviewer would make. An empty return is a failed
 review; a clean review says PASS explicitly.
 
 **Findings are numbered, and each carries its disposition individually.**
@@ -223,12 +281,11 @@ disposition, repair or reason, author model, reviewer model. Keep it
 where an auditor will find it, in the module's `DESIGN.md` or the card's
 review directory if a board is in use.
 
-Keep the reviewer-differs-from-author invariant across both layers: the
-model that wrote the skeleton does not sit in the panel's second seat,
-and the model that filled a body does not review that fill. The two model
-columns in the ledger are what make that invariant auditable.
+Keep reviewers independent of every actual author of the skeleton, tests,
+fills, and integration code they review. Record authors and reviewers so
+that independence can be checked.
 
-The panel is required, not optional. In its founding use it caught a
+Skeleton review is required, not optional. In its founding use it caught a
 fixture type encoding a production-unreachable state and a number of
 logic issues, before any body existed to debug.
 
@@ -257,6 +314,35 @@ before it records what the code should do.
 Practically: accept no snapshot until the body it covers is implemented.
 Run the suite with snapshot auto-acceptance disabled in CI and at every
 gate, so an unreviewed accepted snapshot cannot pass.
+
+### Behavioral evidence for every fill
+
+Name an owner for spec-derived tests before implementation, including work
+with no rendered artifact. Derive expected results from the specification,
+never from the response under test. First-red failure on a `todo!()` proves
+reachability only. For a critical limit, exclusion or representation
+conversion, name a plausible wrong implementation and retain evidence that
+the owning test rejects it. Select critical counterexamples rather than
+requiring mutation of every assertion.
+
+At first-red, a control requiring unassigned production edits remains pending
+with its owning test and the later control owner/check named. Execute selected
+mutants in a disposable worktree once the required bodies exist, before
+claiming that evidence passed. A pending control is not a successful rejection
+and must remain visible at the applicable acceptance gate.
+
+When a storage conversion collapses distinct domain values, cover the exact
+boundary, the first value beyond it, empty input and a colliding stored
+value. If normal ingress cannot construct that row, use a backend-local
+fixture and explain why it is needed. Distinguish a storage-representable
+boundary fixture from a synthetic state invented for production logic.
+Whole-frame goldens remain for emitted artifacts; behavioral tests own
+downstream semantics.
+
+Review this evidence inside the applicable code review, not an extra panel.
+Keep source inspection, owner-executed checks and reviewer-executed checks
+distinct. A permission denial or missing prerequisite is an unverified
+check, not a defect in the diff or a passing runtime check.
 
 ### The coverage manifest
 
@@ -308,29 +394,7 @@ gate for refactor work that must not change output.
 A mode proven only by the positive control cannot be distinguished from a
 mode that asserts nothing. Record both transcripts in the design record.
 
-## Fill order
-
-1. Skeleton commit (Layer 1), green under check, clippy, and fmt.
-2. Design panel; numbered findings with per-finding dispositions; repairs
-   land before any body.
-3. Golden frames written to fail first from the spec (Layer 2), plus the
-   coverage manifest.
-4. Fill bodies one at a time, running `cargo check` after each to narrow
-   the next hole's types. Each fill sweeps its own `#[expect]` markers,
-   accounts for its lines in the hole inventory, and flips its golden
-   frames from red to green. The two signals must agree: a body that
-   compiles clean while its golden stays red is a rendering hole the
-   compiler was always blind to, which is the case Layer 2 exists for.
-5. Remove the module-level `#![allow(dead_code)]` slice by slice as the
-   surface goes live, and close the inventory: `clippy::todo` at deny, or
-   a `grep` that returns nothing.
-
-Where the work is split across cards or issues, the skeleton is one unit
-of work and each fill is another. The skeleton unit's acceptance is
-"compiles, lints, panel dispositioned"; a fill unit's acceptance is "its
-markers swept and its inventory lines accounted for, with its goldens
-green". Run `gate-probes` at those boundaries, and `rust-quality` over
-each filled body.
+## Dispatch units
 
 Delegation follows the same split: the skeleton is the expensive design
 step and the fills are cheap, so a stronger model lays the type surface
@@ -342,11 +406,14 @@ placeholders papering over source-level optionality), because per-unit
 gates cannot see a cross-unit trend; bake the conventions into executor
 briefs and the review checklist. And an executor outside a harness that
 loads skills receives only its brief, so for those executors the brief
-quotes these rules instead of naming skills. Copy the block below into
-the brief, fill the angle brackets, and keep only the half that matches
-the unit.
+quotes the applicable unit below instead of naming skills. Fill the
+angle brackets and send the skeleton, test-only, or fill unit matching
+the assignment, together with the shared API conventions.
 
 > **Skeleton unit.**
+>
+> Inputs: <approved spec path/revision and approval>, <input commit>,
+> <allowed files>, <exact checks>. Stop for missing inputs or scope changes.
 >
 > 1. Lay the full type surface: real signatures, derives, `From`/`Into`
 >    impls, leaf types. No placeholder `String` for a type not yet
@@ -375,21 +442,51 @@ the unit.
 >    `cargo clippy --workspace --all-targets -- -D warnings`, and
 >    `cargo fmt --check` (the `+nightly` form where the repo pins
 >    nightly rustfmt options). Implement no body in this unit.
+
+> **Test-only unit.**
 >
+> Inputs: <approved spec revision>, <reviewed skeleton commit>, <allowed tests,
+> fixtures and mechanical lint markers>, <exact compile and first-red checks>.
+>
+> 1. Exercise the approved API through spec-derived tests. Edit only the
+>    named tests, fixtures, and assigned lint markers; do not change
+>    production types or fill behavior bodies.
+> 2. Derive expectations from the specification and fixture inputs, not
+>    responses under test. Use behavioral tests for semantics and
+>    whole-frame goldens where an emitted artifact exists.
+> 3. Compile the tests, then record the named expected-red set, failure
+>    reasons, count, and bodies each test needs. A compile error is not
+>    intended red; a hole panic proves reachability only. Retain the
+>    critical counterexample evidence or explicitly pending control owner.
+> 4. Return API friction, missing fixture access, new prerequisites, or
+>    scope changes to the coordinator before adopting a workaround.
+> 5. Return the tests and evidence to the coordinator for review before
+>    a filler starts. Do not dispatch reviewers yourself.
+
 > **Fill unit.**
 >
-> 1. Fill only the bodies named here: `<list>`. Changing a signature,
->    derive, or type means the skeleton was wrong: stop and report it.
-> 2. Remove each filled function's `#[expect]` marker by hand. A body
->    that still ignores an argument keeps its marker silent, so sweep
->    rather than waiting for a warning.
-> 3. The golden tests covering these bodies are committed and already
->    failing. The unit is done when they pass with snapshot
->    auto-acceptance disabled.
-> 4. Do not add, edit, or re-accept a snapshot. A golden that looks wrong
->    is a finding to report, not a file to update.
+> Inputs: <spec revision>, <input commit>, <named tests and required bodies>,
+> <remaining holes and expected intermediate red set>, <exact checks>.
 >
-> **API conventions, both units** (drift accumulates across executors and
+> 1. Fill only the bodies named here: <list>. Do not change signatures,
+>    derives, types, or API workflows. Return a needed API change to the
+>    coordinator rather than working around it.
+> 2. Remove each filled function's obsolete #[expect] marker by hand;
+>    sweep its assigned module-level lint markers as the surface goes live.
+> 3. Preserve supplied tests, fixtures, expectations, and snapshots. A
+>    suspected oracle defect returns to the coordinator for test-owner
+>    disposition; do not change the test to fit the implementation.
+> 4. Run the assigned compile/build, lint, formatting, and test checks,
+>    with snapshot auto-acceptance disabled. Its named tests must pass;
+>    distinguish authorized intermediate red from new failures.
+> 5. Mechanically verify no todo!() remains in the completed assigned
+>    body scope and account for authorized remaining holes outside it.
+>    Green tests alone do not establish hole completion.
+> 6. Return the changes and exact check evidence to the coordinator for
+>    implementation review. Do not broaden the assignment or dispatch
+>    reviewers yourself.
+
+> **API conventions, all units** (drift accumulates across executors and
 > is checked at review): `AsRef` impls rather than inherent `as_str` on
 > wrappers over a borrowed form; no function-local consts; no
 > `as_str().to_owned()` chains; never paper over source-level optionality
